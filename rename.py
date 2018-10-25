@@ -71,7 +71,7 @@ from openpyxl import Workbook,load_workbook
 import shutil
 
 #needed for checking the video duration
-from moviepy.editor import VideoFileClip
+from mutagen.mp4 import MP4
 
 #start logging
 logfile=open("logfile.txt", "w")
@@ -120,7 +120,7 @@ for i in os.listdir(path_input):
                     del possibilities[p-compensate_p]
                     compensate_p+=1
             if len(possibilities)==1:
-                if abs(VideoFileClip(i).duration-inputDuration(possibilities[p-compensate_p][1]))<lengthTimewindow:
+                if abs(MP4(i).info.length/60-inputDuration(possibilities[p-compensate_p][1]))<lengthTimewindow:
                     if os.path.isfile(path_output+"\\"+str(possibilities[p-compensate_p][2])+"."+videoformat):
                         log(logfile, "{} exists already... not renaming and moving it\n".format(path_output+"\\"+str(possibilities[p-compensate_p][2])+"."+videoformat))
                     else:
