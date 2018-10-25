@@ -70,6 +70,9 @@ from openpyxl import Workbook,load_workbook
 #needed for moving a file.. Use shutil.move(from, to)
 import shutil
 
+#needed for checking the video duration
+from moviepy.editor import VideoFileClip
+
 #start logging
 logfile=open("logfile.txt", "w")
 
@@ -93,6 +96,15 @@ for i in range(len(excel_data)-1):
 
 print("got following data:")
 printlist(excel_data)
+def inputDuration(time):#input as XX:XX - XX:XX
+    time=time.split("–")
+    time[0]=time[0][:-1]
+    time[1]=time[1][1:]
+    time[0]=time[0].split(":")
+    time[1]=time[1].split(":")
+    minutes_0=int(time[0][0])*60+int(time[0][1])
+    minutes_1=int(time[1][0])*60+int(time[1][1])
+    return minutes_1-minutes_0
 
 
 #iterate over searchpath
@@ -102,11 +114,14 @@ for i in os.listdir(path_input):
         possibilities=searchPossibilities(excel_data, i)
         #if only one result after filtering, move
         if len(possibilities)==1:
-            if os.path.isfile(path_output+"\\"+possibilities[0][2]+"."+videoformat):
-                log(logfile,"{} exists already... not renaming and moving it!".format(path_output+"\\"+possibilities[0][2]+"."+videoformat))
+            if abs(VideoFileClip(i).duration-inputDuration(possibilities[0][1]))<lengthTimewindow:
+                if os.path.isfile(path_output+"\\"+possibilities[0][2]+"."+videoformat):
+                    log(logfile,"{} exists already... not renaming and moving it!".format(path_output+"\\"+possibilities[0][2]+"."+videoformat))
+                else:
+                    shutil.move(i, path_output+"\\"+possibilities[0][2]+"."+videoformat)
+                    log(logfile,"renamed {} --> {}\n".format(i,possibilities[0][2]+"."+videoformat))
             else:
-                shutil.move(i, path_output+"\\"+possibilities[0][2]+"."+videoformat)
-                log(logfile,"renamed {} --> {}\n".format(i,possibilities[0][2]+"."+videoformat))
+                log(logfile, "{} differs from  the excel entry by more than {} minutes\n".format(i, lengthTimewindow))
         elif len(possibilities)>1:
             compensate_p=0
             for p in range(len(possibilities)):
@@ -114,11 +129,14 @@ for i in os.listdir(path_input):
                     del possibilities[p-compensate_p]
                     compensate_p+=1
             if len(possibilities)==1:
-                if os.path.isfile(path_output+"\\"+str(possibilities[p-compensate_p][2])+"."+videoformat):
-                    log(logfile, "{} exists already... not renaming and moving it\n".format(path_output+"\\"+str(possibilities[p-compensate_p][2])+"."+videoformat))
+                if abs(VideoFileClip(i).duration-inputDuration(possibilities[p-compensate_p][1]))<lengthTimewindow:
+                    if os.path.isfile(path_output+"\\"+str(possibilities[p-compensate_p][2])+"."+videoformat):
+                        log(logfile, "{} exists already... not renaming and moving it\n".format(path_output+"\\"+str(possibilities[p-compensate_p][2])+"."+videoformat))
+                    else:
+                        shutil.move(i, path_output+"\\"+str(possibilities[p-compensate_p][2])+"."+videoformat)
+                    log(logfile,"rename {} --> {}\n".format(i,str(possibilities[p-compensate_p][2])+"."+videoformat))
                 else:
-                    shutil.move(i, path_output+"\\"+str(possibilities[p-compensate_p][2])+"."+videoformat)
-                log(logfile,"rename {} --> {}\n".format(i,str(possibilities[p-compensate_p][2])+"."+videoformat))
+                    log(logfile, "{} differs from  the excel entry by more than {} minutes\n".format(i, lengthTimewindow))
             elif len(possibilities)==0:
                 log(logfile, "did not find excel entry for {}\n".format(i))
             else:

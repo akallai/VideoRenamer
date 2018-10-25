@@ -7,6 +7,7 @@ videoformat="mp4"
 
 #in minutes
 timewindow=[10, 30]
+lengthTimewindow=15
 
 path_input=r"C:\Users\Antonio.Kallai\Documents\GitHub\VideoRenamer" 
 path_excel=r"C:\Users\Antonio.Kallai\Documents\GitHub\VideoRenamer\Inputs BT WT 18-19.xlsx"
