@@ -113,16 +113,7 @@ for i in os.listdir(path_input):
         print("\nfound file '{}': searching in excel_sheet...".format(i))
         possibilities=searchPossibilities(excel_data, i)
         #if only one result after filtering, move
-        if len(possibilities)==1:
-            if abs(VideoFileClip(i).duration-inputDuration(possibilities[0][1]))<lengthTimewindow:
-                if os.path.isfile(path_output+"\\"+possibilities[0][2]+"."+videoformat):
-                    log(logfile,"{} exists already... not renaming and moving it!".format(path_output+"\\"+possibilities[0][2]+"."+videoformat))
-                else:
-                    shutil.move(i, path_output+"\\"+possibilities[0][2]+"."+videoformat)
-                    log(logfile,"renamed {} --> {}\n".format(i,possibilities[0][2]+"."+videoformat))
-            else:
-                log(logfile, "{} differs from  the excel entry by more than {} minutes\n".format(i, lengthTimewindow))
-        elif len(possibilities)>1:
+        if len(possibilities)>=1:
             compensate_p=0
             for p in range(len(possibilities)):
                 if withinTimewindow(timewindow,formatTimestamp(i)[1],possibilities[p-compensate_p][1])==0:
