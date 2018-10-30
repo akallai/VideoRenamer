@@ -1,1 +1,1 @@
-python3 rename.py
+python rename.py
