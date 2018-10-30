@@ -121,11 +121,12 @@ for i in os.listdir(path_input):
                     compensate_p+=1
             if len(possibilities)==1:
                 if MP4(i).info.length/60>trashconfiguration:
-                    if os.path.isfile(path_output+"\\"+str(possibilities[p-compensate_p][2])+"."+videoformat):
-                        log(logfile, "{} exists already... not renaming and moving it\n".format(path_output+"\\"+str(possibilities[p-compensate_p][2])+"."+videoformat))
+                    #print(os.path.join(path_output,str(possibilities[p-compensate_p][2])+"."+videoformat), "!!!!!!!")
+                    if os.path.isfile(os.path.join(path_output,str(possibilities[p-compensate_p][2])+"."+videoformat)):
+                        log(logfile, "{} exists already... not renaming and moving it\n".format(os.path.join(path_output,str(possibilities[p-compensate_p][2])+"."+videoformat)))
                     else:
-                        shutil.move(i, path_output+"\\"+str(possibilities[p-compensate_p][2])+"."+videoformat)
-                    log(logfile,"rename {} --> {}\n".format(i,str(possibilities[p-compensate_p][2])+"."+videoformat))
+                        shutil.move(i, os.path.join(path_output, str(possibilities[p-compensate_p][2])+"."+videoformat))
+                        log(logfile,"rename {} --> {}\n".format(i,str(possibilities[p-compensate_p][2])+"."+videoformat))
                 else:
                     log(logfile, "The duration of {} is below {} minutes... its getting ignored\n".format(i, trashconfiguration))
             else:
