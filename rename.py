@@ -120,18 +120,16 @@ for i in os.listdir(path_input):
                     del possibilities[p-compensate_p]
                     compensate_p+=1
             if len(possibilities)==1:
-                if abs(MP4(i).info.length/60-inputDuration(possibilities[p-compensate_p][1]))<lengthTimewindow:
+                if MP4(i).info.length/60>trashconfiguration:
                     if os.path.isfile(path_output+"\\"+str(possibilities[p-compensate_p][2])+"."+videoformat):
                         log(logfile, "{} exists already... not renaming and moving it\n".format(path_output+"\\"+str(possibilities[p-compensate_p][2])+"."+videoformat))
                     else:
                         shutil.move(i, path_output+"\\"+str(possibilities[p-compensate_p][2])+"."+videoformat)
                     log(logfile,"rename {} --> {}\n".format(i,str(possibilities[p-compensate_p][2])+"."+videoformat))
                 else:
-                    log(logfile, "{} differs from  the excel entry by more than {} minutes\n".format(i, lengthTimewindow))
-            elif len(possibilities)==0:
-                log(logfile, "did not find excel entry for {}\n".format(i))
+                    log(logfile, "The duration of {} is below {} minutes... its getting ignored\n".format(i, trashconfiguration))
             else:
                 log(logfile, "To many results found for {}\n".format(i))
         elif len(possibilities)==0:
             log(logfile, "did not find excel entry for {}\n".format(i))
-logfile.close()
+#logfile.close()
