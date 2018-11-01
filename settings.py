@@ -9,7 +9,7 @@ videoformat="mp4"
 timewindow=[10, 60]
 
 #run every x minutes
-automaticallyRun=1 
+automaticallyRun=1
 
 #every video below x min duration gets ignored
 trashconfiguration=1
